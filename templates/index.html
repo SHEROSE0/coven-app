@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>THE COVEN 💀</title>
-    <!-- Import Creepster & Nosifer horror fonts for maximum dripping blood effect -->
     <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Nosifer&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -45,7 +44,6 @@
             border: 2px solid #8b0000;
             padding: 14px 24px;
             box-shadow: 0 0 20px rgba(139, 0, 0, 0.6);
-            /* Smooth fade in and pulse effect for the start button */
             animation: fadeInStart 2s ease-in-out forwards, pulse-start 2s infinite 2s;
             text-align: center;
             opacity: 0;
@@ -59,77 +57,6 @@
         @keyframes pulse-start {
             0%, 100% { opacity: 0.6; transform: scale(1); }
             50% { opacity: 1; transform: scale(1.05); }
-        }
-
-        /* INTRO SEQUENCE OVERLAY: Skull + Bloody Text */
-        #intro-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 90;
-            background-color: #000000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            pointer-events: none;
-        }
-
-        .run-intro-sequence {
-            display: flex !important;
-            animation: introSequenceTotal 5.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-        }
-
-        .bloody-welcome-text {
-            font-family: 'Nosifer', cursive, serif;
-            color: #cc0000;
-            font-size: clamp(2rem, 6vw, 4rem);
-            letter-spacing: 3px;
-            text-align: center;
-            text-shadow: 
-                0 0 4px #ff0000, 
-                0 0 10px #ff0000, 
-                0 0 20px #990000, 
-                0 0 35px #550000,
-                2px 4px 6px #000000;
-            opacity: 0;
-            position: absolute;
-            z-index: 92;
-            animation: bloodyTextFade 5.5s ease-in-out forwards;
-            padding: 0 15px;
-            width: 100%;
-        }
-
-        @keyframes bloodyTextFade {
-            0% { opacity: 0; transform: scale(0.85); }
-            20% { opacity: 1; transform: scale(1); }
-            80% { opacity: 1; transform: scale(1.03); }
-            100% { opacity: 0; transform: scale(1.15); }
-        }
-
-        .intro-skull {
-            position: absolute;
-            width: min(95vw, 500px);
-            height: auto;
-            opacity: 0;
-            z-index: 91;
-            filter: drop-shadow(0 0 40px rgba(139, 0, 0, 0.8));
-            animation: skullZoomFade 5.5s ease-in-out forwards;
-        }
-
-        @keyframes skullZoomFade {
-            0% { opacity: 0; transform: scale(0.75); }
-            20% { opacity: 1; transform: scale(0.9); }
-            70% { opacity: 1; transform: scale(1.15); }
-            100% { opacity: 0; transform: scale(1.35); }
-        }
-
-        @keyframes introSequenceTotal {
-            0% { opacity: 1; }
-            95% { opacity: 1; }
-            100% { opacity: 0; visibility: hidden; }
         }
 
         .bat-container {
@@ -190,7 +117,6 @@
             justify-content: center;
             align-items: center;
             opacity: 0;
-            /* Added continuous background zoom/fade scaling animation */
             transition: opacity 2s ease-in-out;
             padding: 30px 15px;
             background-image: url("{{ url_for('static', filename='image_3.png') }}");
@@ -199,7 +125,6 @@
             background-repeat: no-repeat;
         }
 
-        /* Continuous zoom-in and fade pulse effect for the background image */
         .main-visible {
             opacity: 1 !important;
             animation: bgZoomFadePulse 12s ease-in-out infinite alternate;
@@ -410,12 +335,6 @@
         <div class="start-btn">BEGIN THE RITUAL</div>
     </div>
 
-    <!-- INTRO OVERLAY: Skull + Bloody Text -->
-    <div id="intro-overlay">
-        <div class="bloody-welcome-text">WELCOME TO THE COVEN</div>
-        <img src="{{ url_for('static', filename='image_3.png') }}" alt="Skull" class="intro-skull">
-    </div>
-
     <div id="batContainer" class="bat-container"></div>
 
     <button id="audioToggleBtn" title="Toggle Sound">🔊</button>
@@ -423,7 +342,6 @@
     <div id="mainContainer" class="main-container">
         <div class="ui-container">
 
-            <!-- VIEW 1: NAME INPUT -->
             <div id="inputView" class="view-section active-view">
                 <div class="prompt">What is your name?</div>
                 <form id="covenForm" onsubmit="return false;">
@@ -435,7 +353,6 @@
                 <div id="result-box" style="display: none;"></div>
             </div>
 
-            <!-- VIEW 2: SUCCESS -->
             <div id="successView" class="view-section">
                 <div class="prompt" style="color: #4caf50; text-shadow: 0 0 12px #4caf50;">Access Granted</div>
                 <div id="successMsg" style="color: #ffffff; font-size: 0.9rem; margin-bottom: 12px; line-height: 1.4; background: rgba(27, 94, 32, 0.9); border: 2px solid #4caf50; padding: 10px; border-radius: 8px; width: 100%; word-break: break-word;"></div>
@@ -445,7 +362,6 @@
                 </div>
             </div>
 
-            <!-- VIEW 3: MENU -->
             <div id="menuView" class="view-section">
                 <div class="prompt">Coven Sanctum Menu</div>
                 <button id="friendsMenuBtn" class="occult-btn menu-btn">✨ Friends & Blessings</button>
@@ -453,7 +369,6 @@
                 <button id="menuQuitBtn" class="occult-btn menu-btn" style="border-color: #ff0000; background: rgba(139, 0, 0, 0.6);">Quit to Portal</button>
             </div>
 
-            <!-- VIEW 4: FRIENDS -->
             <div id="friendView" class="view-section">
                 <div class="prompt">Spirit Guidance</div>
                 <div class="friend-card">
@@ -465,7 +380,6 @@
                 <button id="friendQuitBtn" class="occult-btn menu-btn" style="background: rgba(139, 0, 0, 0.6);">Quit to Menu</button>
             </div>
 
-            <!-- VIEW 5: PUNISHMENT -->
             <div id="punishmentView" class="view-section">
                 <div class="prompt" style="color: #ff5252; text-shadow: 0 0 12px #ff5252; font-size: 1rem;">Tribunal of Punishment</div>
                 
@@ -493,7 +407,6 @@
 
     <script>
         const startOverlay = document.getElementById('audio-start-overlay');
-        const introOverlay = document.getElementById('intro-overlay');
         const batContainer = document.getElementById('batContainer');
         const mainContainer = document.getElementById('mainContainer');
         const audioToggleBtn = document.getElementById('audioToggleBtn');
@@ -584,13 +497,9 @@
         startOverlay.addEventListener('click', function() {
             initSpookyAudio();
             startOverlay.style.display = 'none';
-            introOverlay.classList.add('run-intro-sequence');
-
-            setTimeout(() => {
-                batContainer.style.display = 'block';
-                mainContainer.classList.add('main-visible');
-                startRandomBatSpawner();
-            }, 5500);
+            batContainer.style.display = 'block';
+            mainContainer.classList.add('main-visible');
+            startRandomBatSpawner();
         });
 
         function spawnSingleBat() {
