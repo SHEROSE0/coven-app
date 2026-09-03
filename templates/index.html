@@ -128,22 +128,22 @@
             transition: opacity 1.5s ease-in-out;
             padding: 30px 15px;
             background-image: url("{{ url_for('static', filename='coven_bg.jpg') }}");
-            background-size: 90% auto;
+            background-size: 100% auto;
             background-position: center;
             background-repeat: no-repeat;
         }
 
         .main-visible {
             opacity: 1 !important;
-            animation: smoothZoom 7s ease-out forwards;
+            animation: slowZoom 12s linear infinite alternate;
         }
 
-        @keyframes smoothZoom {
+        @keyframes slowZoom {
             0% {
-                background-size: 90% auto;
+                background-size: 100% auto;
             }
             100% {
-                background-size: 115% auto;
+                background-size: 108% auto;
             }
         }
 
@@ -170,7 +170,7 @@
             text-align: center;
             opacity: 0;
             transform: scale(0.95);
-            transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out;
+            transition: opacity 1.2s ease-in-out, transform 1.2s ease-in-out;
         }
 
         .ui-visible {
@@ -361,6 +361,9 @@
                     </div>
                 </form>
                 <div id="result-box" style="display: none;"></div>
+                <div id="tryAgainContainer" style="display: none; width: 100%; margin-top: 10px;">
+                    <button id="tryAgainOutsiderBtn" class="occult-btn" style="background: rgba(183, 28, 28, 0.9); border-color: #ff5252;">TRY AGAIN 🩸</button>
+                </div>
             </div>
 
             <div id="successView" class="view-section">
@@ -433,6 +436,8 @@
         const submitNameBtn = document.getElementById('submitNameBtn');
         const resultBox = document.getElementById('result-box');
         const successMsg = document.getElementById('successMsg');
+        const tryAgainContainer = document.getElementById('tryAgainContainer');
+        const tryAgainOutsiderBtn = document.getElementById('tryAgainOutsiderBtn');
 
         const goToMenuBtn = document.getElementById('goToMenuBtn');
         const tryAgainSuccessBtn = document.getElementById('tryAgainSuccessBtn');
@@ -510,13 +515,13 @@
             startOverlay.style.display = 'none';
             batContainer.style.display = 'block';
             
-            // Step 1: Fade in and play the clean, smooth zoom background first
+            // Step 1: Fully display the background image alone first
             mainContainer.classList.add('main-visible');
             
-            // Step 2: Delay the "What is your name?" prompt box entrance so the image displays clearly by itself first
+            // Step 2: Give a clean 3-second pause so the skull background is fully enjoyed solo, then fade in the input box smoothly
             setTimeout(() => {
                 uiContainer.classList.add('ui-visible');
-            }, 2500);
+            }, 3000);
 
             startRandomBatSpawner();
         });
@@ -588,6 +593,7 @@
                     resultBox.style.display = 'block';
                     resultBox.classList.add('outsider-denied');
                     resultBox.innerText = data.message;
+                    tryAgainContainer.style.display = 'block';
                     mainContainer.style.animation = 'shake 0.4s';
                     setTimeout(() => { mainContainer.style.animation = 'none'; }, 400);
                 } else {
@@ -595,6 +601,7 @@
                     resultBox.style.display = 'block';
                     resultBox.classList.add('input-error');
                     resultBox.innerText = data.message;
+                    tryAgainContainer.style.display = 'none';
                 }
             } catch (err) {}
         }
@@ -608,9 +615,16 @@
 
         submitNameBtn.addEventListener('click', handleNameSubmission);
 
+        tryAgainOutsiderBtn.addEventListener('click', function() {
+            nameInput.value = '';
+            resultBox.style.display = 'none';
+            tryAgainContainer.style.display = 'none';
+        });
+
         tryAgainSuccessBtn.addEventListener('click', function() {
             nameInput.value = '';
             resultBox.style.display = 'none';
+            tryAgainContainer.style.display = 'none';
             switchView(inputView);
         });
 
@@ -621,6 +635,7 @@
         menuQuitBtn.addEventListener('click', function() {
             nameInput.value = '';
             resultBox.style.display = 'none';
+            tryAgainContainer.style.display = 'none';
             switchView(inputView);
         });
 
