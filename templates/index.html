@@ -115,7 +115,6 @@
             outline: none;
         }
 
-        /* Background Container Layer */
         .main-container {
             position: relative;
             z-index: 10;
@@ -126,7 +125,8 @@
             justify-content: center;
             align-items: center;
             opacity: 0;
-            transition: opacity 1.2s ease-in-out;
+            visibility: hidden;
+            transition: opacity 1s ease-in-out, visibility 1s;
             padding: 30px 15px;
             background-image: url("{{ url_for('static', filename='coven_bg.jpg') }}");
             background-size: 100% auto;
@@ -136,6 +136,7 @@
 
         .main-visible {
             opacity: 1 !important;
+            visibility: visible !important;
             animation: slowZoom 15s linear infinite alternate;
         }
 
@@ -156,7 +157,6 @@
             pointer-events: none;
         }
 
-        /* UI Container Layer (Starts completely hidden) */
         .ui-container {
             position: relative;
             z-index: 20;
@@ -169,7 +169,7 @@
             opacity: 0;
             visibility: hidden;
             transform: scale(0.95);
-            transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out, visibility 1.5s;
+            transition: opacity 1.2s ease-in-out, transform 1.2s ease-in-out, visibility 1.2s;
         }
 
         .ui-visible {
@@ -515,13 +515,13 @@
             startOverlay.style.display = 'none';
             batContainer.style.display = 'block';
             
-            // Step 1: Immediately show the background image layer solo
+            // Step 1: Make background container visible entirely by itself
             mainContainer.classList.add('main-visible');
             
-            // Step 2: Hold off for 3.5 seconds so the skull background is fully enjoyed by itself first, then fade in the prompt box
+            // Step 2: Keep the prompt completely invisible for 4 seconds so the background image is the only thing shown
             setTimeout(() => {
                 uiContainer.classList.add('ui-visible');
-            }, 3500);
+            }, 4000);
 
             startRandomBatSpawner();
         });
