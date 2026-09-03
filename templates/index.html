@@ -19,7 +19,6 @@
             background-color: #000000;
             font-family: 'Georgia', serif;
             overflow-x: hidden;
-            /* Background image loaded directly on body so it's instantly there */
             background-image: url("{{ url_for('static', filename='coven_bg.jpg') }}");
             background-size: 100% auto;
             background-position: center;
@@ -37,6 +36,23 @@
             box-shadow: inset 0 0 50px rgba(139, 0, 0, 0.6), inset 0 0 120px rgba(0, 0, 0, 0.98);
             pointer-events: none;
             z-index: 1;
+        }
+
+        #bg-fade-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000000;
+            z-index: 2;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 2s ease-in-out;
+        }
+
+        .bg-faded {
+            opacity: 1 !important;
         }
 
         #audio-start-overlay {
@@ -144,7 +160,6 @@
             padding: 30px 15px;
         }
 
-        /* UI Container Layer (Starts completely hidden so only the background image shows) */
         .ui-container {
             position: relative;
             z-index: 20;
@@ -319,27 +334,20 @@
             outline: none;
             margin-bottom: 12px;
         }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-8px); }
-            40%, 80% { transform: translateX(8px); }
-        }
     </style>
 </head>
 <body>
 
+    <div id="bg-fade-overlay"></div>
     <div id="audio-start-overlay">
         <div class="start-btn">BEGIN THE RITUAL</div>
     </div>
 
     <div id="batContainer" class="bat-container"></div>
-
     <button id="audioToggleBtn" title="Toggle Sound">🔊</button>
 
     <div id="mainContainer" class="main-container">
         <div id="uiContainer" class="ui-container">
-
             <div id="inputView" class="view-section active-view">
                 <div class="prompt">What is your name?</div>
                 <form id="covenForm" onsubmit="return false;">
@@ -383,7 +391,6 @@
 
             <div id="punishmentView" class="view-section">
                 <div class="prompt" style="color: #ff5252; text-shadow: 0 0 12px #ff5252; font-size: 1rem;">Tribunal of Punishment</div>
-                
                 <div style="width: 100%; text-align: left; margin-bottom: 4px; color: #ff8a80; font-size: 0.75rem; text-transform: uppercase;">Select Target Member:</div>
                 <select id="targetSelect" class="target-select">
                     <option value="SHALOM">SHALOM</option>
@@ -392,22 +399,20 @@
                     <option value="MALIK">MALIK</option>
                     <option value="NIFEMI">NIFEMI</option>
                 </select>
-
                 <div id="captureCard" class="punishment-card">
                     <div style="font-size: 0.75rem; color: #ff8a80; margin-bottom: 4px; text-transform: uppercase;">Queen Mother's Decree:</div>
                     <div id="punishmentDisplay" class="friend-action" style="font-size: 0.85rem; color: #ffcdd2;">---</div>
                 </div>
-
                 <button id="executePunishmentBtn" class="occult-btn menu-btn" style="background: rgba(183, 28, 28, 0.9); border-color: #ff5252;">⚖️ Issue Royal Decree & Trial</button>
                 <button id="saveImageBtn" class="occult-btn menu-btn" style="background: rgba(46, 125, 50, 0.9); border-color: #81c784;">📸 Save Decree as Image</button>
                 <button id="punishmentQuitBtn" class="occult-btn menu-btn" style="background: rgba(139, 0, 0, 0.6);">Quit to Menu</button>
             </div>
-
         </div>
     </div>
 
     <script>
         const startOverlay = document.getElementById('audio-start-overlay');
+        const bgFadeOverlay = document.getElementById('bg-fade-overlay');
         const batContainer = document.getElementById('batContainer');
         const uiContainer = document.getElementById('uiContainer');
         const audioToggleBtn = document.getElementById('audioToggleBtn');
@@ -502,11 +507,15 @@
             startOverlay.style.display = 'none';
             batContainer.style.display = 'block';
             
-            // Background image is already rendering on body instantly. 
-            // Wait 4 full seconds of showing ONLY the background image, then fade in the prompt box UI.
+            bgFadeOverlay.classList.add('bg-faded');
+
             setTimeout(() => {
-                uiContainer.classList.add('ui-visible');
-            }, 4000);
+                bgFadeOverlay.style.transition = 'opacity 2s ease-in-out';
+                bgFadeOverlay.classList.remove('bg-faded');
+                setTimeout(() => {
+                    uiContainer.classList.add('ui-visible');
+                }, 500);
+            }, 3000);
 
             startRandomBatSpawner();
         });
