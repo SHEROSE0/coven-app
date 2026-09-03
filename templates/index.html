@@ -128,14 +128,14 @@
             transition: opacity 1s ease-in-out;
             padding: 30px 15px;
             background-image: url("{{ url_for('static', filename='coven_bg.jpg') }}");
-            background-size: contain;
+            background-size: 80% auto;
             background-position: center;
             background-repeat: no-repeat;
         }
 
         .main-visible {
             opacity: 1 !important;
-            animation: bgSequence 5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            animation: bgSequence 4.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
 
         @keyframes bgSequence {
@@ -143,16 +143,16 @@
                 background-size: 80% auto;
                 opacity: 0;
             }
-            20% {
-                background-size: 95% auto;
+            25% {
+                background-size: 100% auto;
                 opacity: 1;
             }
-            70% {
+            75% {
                 background-size: 130% auto;
                 opacity: 1;
             }
             100% {
-                background-size: 150% auto;
+                background-size: 160% auto;
                 opacity: 0;
             }
         }
@@ -519,12 +519,14 @@
             initSpookyAudio();
             startOverlay.style.display = 'none';
             batContainer.style.display = 'block';
+            
+            // Step 1: Fade in and play background zoom/fade animation sequence first
             mainContainer.classList.add('main-visible');
             
-            // Trigger the "What is your name" prompt box right as the background image finishes zooming and fading out (~4.2s)
+            // Step 2: Exactly when the background zoom/fade finishes (~3.8s), reveal the prompt box seamlessly
             setTimeout(() => {
                 uiContainer.classList.add('ui-visible');
-            }, 4200);
+            }, 3800);
 
             startRandomBatSpawner();
         });
