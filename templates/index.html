@@ -446,6 +446,7 @@
         const captureCard = document.getElementById('captureCard');
 
         let customAudio = null;
+        let secondAudio = null;
 
         function switchView(targetView) {
             [inputView, successView, menuView, friendView, punishmentView].forEach(v => v.classList.remove('active-view'));
@@ -459,7 +460,15 @@
                     customAudio.loop = true;
                     customAudio.volume = 0.7;
                 }
-                customAudio.play().then(() => {
+                if (!secondAudio) {
+                    secondAudio = new Audio("{{ url_for('static', filename='static.mp3') }}");
+                    secondAudio.loop = true;
+                    secondAudio.volume = 0.5;
+                }
+                Promise.all([
+                    customAudio.play(),
+                    secondAudio.play()
+                ]).then(() => {
                     audioToggleBtn.innerText = '🔊';
                     audioToggleBtn.style.display = 'flex';
                 }).catch(err => {
@@ -470,11 +479,14 @@
         }
 
         audioToggleBtn.addEventListener('click', function() {
-            if (!customAudio) return;
+            if (!customAudio || !secondAudio) return;
             if (customAudio.paused) {
-                customAudio.play().then(() => { audioToggleBtn.innerText = '🔊'; });
+                customAudio.play();
+                secondAudio.play();
+                audioToggleBtn.innerText = '🔊';
             } else {
                 customAudio.pause();
+                secondAudio.pause();
                 audioToggleBtn.innerText = '🔇';
             }
         });
