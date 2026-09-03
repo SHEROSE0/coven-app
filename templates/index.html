@@ -463,25 +463,33 @@
             try {
                 if (!customAudio) {
                     fetch('/coven-music-stream')
-                        .then(res => res.json())
+                        .then(res => {
+                            if (!res.ok) throw new Error("Stream route returned " + res.status);
+                            return res.json();
+                        })
                         .then(data => {
+                            console.log("Track received from backend:", data.track);
                             customAudio = new Audio(`/static/${data.track}`);
                             customAudio.loop = true;
                             customAudio.volume = 0.7;
                             customAudio.play().then(() => {
                                 audioToggleBtn.innerText = '🔊';
                                 audioToggleBtn.style.display = 'flex';
-                            }).catch(() => {
+                            }).catch(err => {
+                                console.error("Audio play blocked or failed:", err);
                                 audioToggleBtn.innerText = '🔇';
                                 audioToggleBtn.style.display = 'flex';
                             });
-                        }).catch(() => {
+                        }).catch(err => {
+                            console.warn("Falling back to ambient.mp3 because:", err);
                             customAudio = new Audio("{{ url_for('static', filename='ambient.mp3') }}");
                             customAudio.loop = true;
                             customAudio.volume = 0.7;
                             customAudio.play().then(() => {
                                 audioToggleBtn.innerText = '🔊';
                                 audioToggleBtn.style.display = 'flex';
+                            }).catch(e => {
+                                console.error("Fallback play failed:", e);
                             });
                         });
                 } else {
@@ -492,7 +500,9 @@
                         audioToggleBtn.innerText = '🔇';
                     }
                 }
-            } catch (e) {}
+            } catch (e) {
+                console.error("Audio init error:", e);
+            }
         }
 
         audioToggleBtn.addEventListener('click', function() {
