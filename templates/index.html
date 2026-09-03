@@ -34,7 +34,7 @@
             z-index: 0;
             transform: scale(1);
             opacity: 0.9;
-            transition: transform 2s cubic-bezier(0.25, 1, 0.5, 1), opacity 2s ease-in-out;
+            /* Removed transitions so it doesn't fade */
         }
 
         .zoomed-bg {
@@ -68,7 +68,7 @@
             align-items: center;
             cursor: pointer;
             padding: 20px;
-            transition: opacity 1.5s ease-in-out;
+            /* Removed transitions */
         }
 
         .start-btn {
@@ -174,7 +174,7 @@
             opacity: 0;
             visibility: hidden;
             transform: scale(0.95);
-            transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out, visibility 1.5s;
+            /* Removed transitions */
         }
 
         .ui-visible {
@@ -455,7 +455,7 @@
         let customAudio = null;
 
         function switchView(targetView) {
-            [inputView, successView, menuView, friendView, punishmentView].forEach(v => v.classList.remove('active-view'));
+            [inputView, successView, menuView, friendView, punishmentView].forEach(v => v.classList.0 && v.classList.remove('active-view') || v.classList.remove('active-view'));
             targetView.classList.add('active-view');
         }
 
@@ -518,20 +518,15 @@
         startOverlay.addEventListener('click', function() {
             initSpookyAudio();
             
-            // Trigger zoom-in and fade animation on the background layer
-            bgLayer.classList.add('zoomed-bg');
+            // Instantly hide the background image layer completely
+            bgLayer.style.display = 'none';
 
-            // Fade out and remove start overlay smoothly
-            startOverlay.style.opacity = '0';
-            setTimeout(() => {
-                startOverlay.style.display = 'none';
-            }, 1500);
+            // Instantly hide and remove start overlay
+            startOverlay.style.display = 'none';
 
+            // Show bats and name prompt immediately
             batContainer.style.display = 'block';
-
-            setTimeout(() => {
-                uiContainer.classList.add('ui-visible');
-            }, 500);
+            uiContainer.classList.add('ui-visible');
 
             startRandomBatSpawner();
         });
