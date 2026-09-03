@@ -127,21 +127,25 @@
 
         .main-visible {
             opacity: 1 !important;
-            animation: bgZoomFadePulse 12s ease-in-out infinite alternate;
+            animation: bgSequence 6s ease-in-out forwards;
         }
 
-        @keyframes bgZoomFadePulse {
+        @keyframes bgSequence {
             0% {
-                background-size: 90% auto;
-                opacity: 0.8;
+                background-size: 80% auto;
+                opacity: 0;
             }
-            50% {
+            35% {
                 background-size: 110% auto;
+                opacity: 1;
+            }
+            70% {
+                background-size: 125% auto;
                 opacity: 1;
             }
             100% {
                 background-size: 90% auto;
-                opacity: 0.8;
+                opacity: 0;
             }
         }
 
@@ -167,11 +171,13 @@
             align-items: center;
             text-align: center;
             opacity: 0;
-            transition: opacity 1.5s ease-in-out 0.5s;
+            transform: scale(0.95);
+            transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out;
         }
 
-        .main-visible .ui-container {
-            opacity: 1;
+        .ui-visible {
+            opacity: 1 !important;
+            transform: scale(1) !important;
         }
 
         .prompt {
@@ -346,7 +352,7 @@
     <button id="audioToggleBtn" title="Toggle Sound">🔊</button>
 
     <div id="mainContainer" class="main-container">
-        <div class="ui-container">
+        <div id="uiContainer" class="ui-container">
 
             <div id="inputView" class="view-section active-view">
                 <div class="prompt">What is your name?</div>
@@ -415,6 +421,7 @@
         const startOverlay = document.getElementById('audio-start-overlay');
         const batContainer = document.getElementById('batContainer');
         const mainContainer = document.getElementById('mainContainer');
+        const uiContainer = document.getElementById('uiContainer');
         const audioToggleBtn = document.getElementById('audioToggleBtn');
         
         const inputView = document.getElementById('inputView');
@@ -505,6 +512,12 @@
             startOverlay.style.display = 'none';
             batContainer.style.display = 'block';
             mainContainer.classList.add('main-visible');
+            
+            // Fade in the prompt box precisely after the background image fades out/zooms
+            setTimeout(() => {
+                uiContainer.classList.add('ui-visible');
+            }, 3800);
+
             startRandomBatSpawner();
         });
 
