@@ -119,7 +119,7 @@
             opacity: 0;
             transition: opacity 2s ease-in-out;
             padding: 30px 15px;
-            background-image: url("{{ url_for('static', filename='image_3.png') }}");
+            background-image: url("{{ url_for('static', filename='coven_bg.jpg') }}");
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
@@ -166,6 +166,12 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out 0.5s;
+        }
+
+        .main-visible .ui-container {
+            opacity: 1;
         }
 
         .prompt {
