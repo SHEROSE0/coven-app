@@ -115,6 +115,7 @@
             outline: none;
         }
 
+        /* Background Container Layer */
         .main-container {
             position: relative;
             z-index: 10;
@@ -125,7 +126,7 @@
             justify-content: center;
             align-items: center;
             opacity: 0;
-            transition: opacity 1.5s ease-in-out;
+            transition: opacity 1.2s ease-in-out;
             padding: 30px 15px;
             background-image: url("{{ url_for('static', filename='coven_bg.jpg') }}");
             background-size: 100% auto;
@@ -135,16 +136,12 @@
 
         .main-visible {
             opacity: 1 !important;
-            animation: slowZoom 12s linear infinite alternate;
+            animation: slowZoom 15s linear infinite alternate;
         }
 
         @keyframes slowZoom {
-            0% {
-                background-size: 100% auto;
-            }
-            100% {
-                background-size: 108% auto;
-            }
+            0% { background-size: 100% auto; }
+            100% { background-size: 106% auto; }
         }
 
         .main-container::before {
@@ -159,6 +156,7 @@
             pointer-events: none;
         }
 
+        /* UI Container Layer (Starts completely hidden) */
         .ui-container {
             position: relative;
             z-index: 20;
@@ -169,12 +167,14 @@
             align-items: center;
             text-align: center;
             opacity: 0;
+            visibility: hidden;
             transform: scale(0.95);
-            transition: opacity 1.2s ease-in-out, transform 1.2s ease-in-out;
+            transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out, visibility 1.5s;
         }
 
         .ui-visible {
             opacity: 1 !important;
+            visibility: visible !important;
             transform: scale(1) !important;
         }
 
@@ -515,13 +515,13 @@
             startOverlay.style.display = 'none';
             batContainer.style.display = 'block';
             
-            // Step 1: Fully display the background image alone first
+            // Step 1: Immediately show the background image layer solo
             mainContainer.classList.add('main-visible');
             
-            // Step 2: Give a clean 3-second pause so the skull background is fully enjoyed solo, then fade in the input box smoothly
+            // Step 2: Hold off for 3.5 seconds so the skull background is fully enjoyed by itself first, then fade in the prompt box
             setTimeout(() => {
                 uiContainer.classList.add('ui-visible');
-            }, 3000);
+            }, 3500);
 
             startRandomBatSpawner();
         });
