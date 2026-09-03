@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE COVEN 💀</title>
+    <!-- Import Creepster & Nosifer horror fonts for maximum dripping blood effect -->
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Nosifer&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body, html {
+            width: 100%;
+            min-height: 100vh;
+            background-color: #000000;
+            font-family: 'Georgia', serif;
+            overflow-x: hidden;
+        }
+
+        #audio-start-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+            background: #000000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            padding: 20px;
+        }
+
+        .start-btn {
+            color: #8b0000;
+            font-size: clamp(1rem, 4vw, 1.3rem);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            border: 2px solid #8b0000;
+            padding: 14px 24px;
+            box-shadow: 0 0 20px rgba(139, 0, 0, 0.6);
+            animation: pulse-start 2s infinite;
+            text-align: center;
+        }
+
+        @keyframes pulse-start {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        /* INTRO SEQUENCE OVERLAY: Skull + Bloody Text */
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 90;
+            background-color: #000000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            pointer-events: none;
+        }
+
+        .run-intro-sequence {
+            display: flex !important;
+            animation: introSequenceTotal 5.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        .bloody-welcome-text {
+            font-family: 'Nosifer', cursive, serif;
+            color: #cc0000;
+            font-size: clamp(2rem, 6vw, 4rem);
+            letter-spacing: 3px;
+            text-align: center;
+            text-shadow: 
+                0 0 4px #ff0000, 
+                0 0 10px #ff0000, 
+                0 0 20px #990000, 
+                0 0 35px #550000,
+                2px 4px 6px #000000;
+            opacity: 0;
+            position: absolute;
+            z-index: 92;
+            animation: bloodyTextFade 5.5s ease-in-out forwards;
+            padding: 0 15px;
+            width: 100%;
+        }
+
+        @keyframes bloodyTextFade {
+            0% { opacity: 0; transform: scale(0.85); }
+            20% { opacity: 1; transform: scale(1); }
+            80% { opacity: 1; transform: scale(1.03); }
+            100% { opacity: 0; transform: scale(1.15); }
+        }
+
+        .intro-skull {
+            position: absolute;
+            width: min(95vw, 500px);
+            height: auto;
+            opacity: 0;
+            z-index: 91;
+            filter: drop-shadow(0 0 40px rgba(139, 0, 0, 0.8));
+            animation: skullZoomFade 5.5s ease-in-out forwards;
+        }
+
+        @keyframes skullZoomFade {
+            0% { opacity: 0; transform: scale(0.75); }
+            20% { opacity: 1; transform: scale(0.9); }
+            70% { opacity: 1; transform: scale(1.15); }
+            100% { opacity: 0; transform: scale(1.35); }
+        }
+
+        @keyframes introSequenceTotal {
+            0% { opacity: 1; }
+            95% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+
+        .bat-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 30;
+            overflow: hidden;
+            display: none;
+        }
+
+        .bat {
+            position: absolute;
+            fill: #080000;
+            filter: drop-shadow(0 0 12px #ff0000);
+        }
+
+        .bat .wing {
+            animation: flapWing 0.18s ease-in-out infinite alternate;
+            transform-origin: center;
+        }
+
+        @keyframes flapWing {
+            0% { transform: scaleY(1); }
+            100% { transform: scaleY(-0.5) translateY(-10px); }
+        }
+
+        #audioToggleBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 80;
+            background: rgba(20, 0, 30, 0.85);
+            border: 1px solid #ab47bc;
+            color: #e1bee7;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 12px rgba(171, 71, 188, 0.5);
+            outline: none;
+        }
+
+        .main-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            min-height: 100vh;
+            background-color: #000000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+            padding: 30px 15px;
+            background-image: url("{{ url_for('static', filename='image_3.png') }}");
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .main-container::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(20,0,0,0.85) 0%, rgba(0,0,0,0.96) 100%);
+            box-shadow: inset 0 0 50px rgba(139, 0, 0, 0.6), inset 0 0 120px rgba(0, 0, 0, 0.98);
+            pointer-events: none;
+        }
+
+        .main-visible {
+            opacity: 1 !important;
+        }
+
+        .ui-container {
+            position: relative;
+            z-index: 20;
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .prompt {
+            color: #ffffff;
+            font-size: clamp(1rem, 3.5vw, 1.2rem);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            text-shadow: 0 0 12px #ff0000, 0 0 20px #8b0000;
+        }
+
+        form {
+            width: 100%;
+        }
+
+        .input-group {
+            position: relative;
+            width: 100%;
+            background: rgba(8, 2, 12, 0.95);
+            border: 2px solid #6a1b9a;
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 0 15px rgba(106, 27, 154, 0.7);
+        }
+
+        .name-input {
+            flex-grow: 1;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            outline: none;
+            text-align: center;
+            font-family: inherit;
+            min-width: 0;
+        }
+
+        .name-input::placeholder {
+            color: #666;
+        }
+
+        .crystal-btn {
+            background: none;
+            border: none;
+            color: #ab47bc;
+            font-size: 1.3rem;
+            cursor: pointer;
+            margin-left: 8px;
+            outline: none;
+            padding: 4px;
+        }
+
+        .view-section {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .active-view {
+            display: flex;
+        }
+
+        #result-box {
+            margin-top: 12px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            width: 100%;
+            line-height: 1.4;
+        }
+
+        .outsider-denied {
+            background-color: rgba(183, 28, 28, 0.95);
+            border: 2px solid #ef5350;
+            color: #ffcdd2;
+        }
+
+        .input-error {
+            background-color: rgba(230, 81, 0, 0.95);
+            border: 2px solid #ff9800;
+            color: #ffe0b2;
+        }
+
+        .occult-btn {
+            background: rgba(139, 0, 0, 0.85);
+            color: #ffffff;
+            border: 1px solid #ff0000;
+            padding: 10px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: inherit;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            font-size: 0.85rem;
+            width: 100%;
+        }
+
+        .menu-btn {
+            background: rgba(80, 0, 120, 0.85);
+            border: 1px solid #ab47bc;
+            width: 100%;
+            padding: 10px 14px;
+            margin: 6px 0;
+            font-size: 0.9rem;
+        }
+
+        .friend-card, .punishment-card {
+            background: rgba(40, 0, 0, 0.95);
+            border: 2px solid #ff5252;
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            width: 100%;
+        }
+
+        .friend-card {
+            background: rgba(20, 0, 30, 0.95);
+            border: 2px solid #ab47bc;
+        }
+
+        .friend-name {
+            color: #e1bee7;
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            word-break: break-word;
+        }
+
+        .friend-action {
+            color: #ffffff;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .target-select {
+            width: 100%;
+            background: rgba(15, 5, 20, 0.95);
+            border: 2px solid #ff5252;
+            color: #ffffff;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            font-family: inherit;
+            outline: none;
+            margin-bottom: 12px;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="audio-start-overlay">
+        <div class="start-btn">BEGIN THE RITUAL</div>
+    </div>
+
+    <!-- INTRO OVERLAY: Skull + Bloody Text -->
+    <div id="intro-overlay">
+        <div class="bloody-welcome-text">WELCOME TO THE COVEN</div>
+        <img src="{{ url_for('static', filename='image_3.png') }}" alt="Skull" class="intro-skull">
+    </div>
+
+    <div id="batContainer" class="bat-container"></div>
+
+    <button id="audioToggleBtn" title="Toggle Sound">🔊</button>
+
+    <div id="mainContainer" class="main-container">
+        <div class="ui-container">
+
+            <!-- VIEW 1: NAME INPUT -->
+            <div id="inputView" class="view-section active-view">
+                <div class="prompt">What is your name?</div>
+                <form id="covenForm" onsubmit="return false;">
+                    <div class="input-group">
+                        <input type="text" id="nameInput" class="name-input" placeholder="TYPE YOUR NAME..." autocomplete="off">
+                        <button type="button" id="submitNameBtn" class="crystal-btn">&#x2605;</button>
+                    </div>
+                </form>
+                <div id="result-box" style="display: none;"></div>
+            </div>
+
+            <!-- VIEW 2: SUCCESS -->
+            <div id="successView" class="view-section">
+                <div class="prompt" style="color: #4caf50; text-shadow: 0 0 12px #4caf50;">Access Granted</div>
+                <div id="successMsg" style="color: #ffffff; font-size: 0.9rem; margin-bottom: 12px; line-height: 1.4; background: rgba(27, 94, 32, 0.9); border: 2px solid #4caf50; padding: 10px; border-radius: 8px; width: 100%; word-break: break-word;"></div>
+                <div style="width: 100%; display: flex; flex-direction: column; gap: 8px;">
+                    <button id="goToMenuBtn" class="occult-btn menu-btn" style="margin: 0;">ENTER COVEN MENU 🦇</button>
+                    <button id="tryAgainSuccessBtn" class="occult-btn">TRY AGAIN 🩸</button>
+                </div>
+            </div>
+
+            <!-- VIEW 3: MENU -->
+            <div id="menuView" class="view-section">
+                <div class="prompt">Coven Sanctum Menu</div>
+                <button id="friendsMenuBtn" class="occult-btn menu-btn">✨ Friends & Blessings</button>
+                <button id="punishmentMenuBtn" class="occult-btn menu-btn" style="border-color: #ff5252; background: rgba(183, 28, 28, 0.7);">🔥 Tribunal of Punishment</button>
+                <button id="menuQuitBtn" class="occult-btn menu-btn" style="border-color: #ff0000; background: rgba(139, 0, 0, 0.6);">Quit to Portal</button>
+            </div>
+
+            <!-- VIEW 4: FRIENDS -->
+            <div id="friendView" class="view-section">
+                <div class="prompt">Spirit Guidance</div>
+                <div class="friend-card">
+                    <div style="font-size: 0.75rem; color: #b39ddb; margin-bottom: 4px; text-transform: uppercase;">Suggested Coven Member:</div>
+                    <div id="friendNameDisplay" class="friend-name">---</div>
+                    <div id="friendActionDisplay" class="friend-action">---</div>
+                </div>
+                <button id="anotherFriendBtn" class="occult-btn menu-btn">🔮 Pick Another Friend</button>
+                <button id="friendQuitBtn" class="occult-btn menu-btn" style="background: rgba(139, 0, 0, 0.6);">Quit to Menu</button>
+            </div>
+
+            <!-- VIEW 5: PUNISHMENT -->
+            <div id="punishmentView" class="view-section">
+                <div class="prompt" style="color: #ff5252; text-shadow: 0 0 12px #ff5252; font-size: 1rem;">Tribunal of Punishment</div>
+                
+                <div style="width: 100%; text-align: left; margin-bottom: 4px; color: #ff8a80; font-size: 0.75rem; text-transform: uppercase;">Select Target Member:</div>
+                <select id="targetSelect" class="target-select">
+                    <option value="SHALOM">SHALOM</option>
+                    <option value="TIMOTHY">TIMOTHY</option>
+                    <option value="WILSON">WILSON</option>
+                    <option value="MALIK">MALIK</option>
+                    <option value="NIFEMI">NIFEMI</option>
+                </select>
+
+                <div id="captureCard" class="punishment-card">
+                    <div style="font-size: 0.75rem; color: #ff8a80; margin-bottom: 4px; text-transform: uppercase;">Queen Mother's Decree:</div>
+                    <div id="punishmentDisplay" class="friend-action" style="font-size: 0.85rem; color: #ffcdd2;">---</div>
+                </div>
+
+                <button id="executePunishmentBtn" class="occult-btn menu-btn" style="background: rgba(183, 28, 28, 0.9); border-color: #ff5252;">⚖️ Issue Royal Decree & Trial</button>
+                <button id="saveImageBtn" class="occult-btn menu-btn" style="background: rgba(46, 125, 50, 0.9); border-color: #81c784;">📸 Save Decree as Image</button>
+                <button id="punishmentQuitBtn" class="occult-btn menu-btn" style="background: rgba(139, 0, 0, 0.6);">Quit to Menu</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const startOverlay = document.getElementById('audio-start-overlay');
+        const introOverlay = document.getElementById('intro-overlay');
+        const batContainer = document.getElementById('batContainer');
+        const mainContainer = document.getElementById('mainContainer');
+        const audioToggleBtn = document.getElementById('audioToggleBtn');
+        
+        const inputView = document.getElementById('inputView');
+        const successView = document.getElementById('successView');
+        const menuView = document.getElementById('menuView');
+        const friendView = document.getElementById('friendView');
+        const punishmentView = document.getElementById('punishmentView');
+
+        const covenForm = document.getElementById('covenForm');
+        const nameInput = document.getElementById('nameInput');
+        const submitNameBtn = document.getElementById('submitNameBtn');
+        const resultBox = document.getElementById('result-box');
+        const successMsg = document.getElementById('successMsg');
+
+        const goToMenuBtn = document.getElementById('goToMenuBtn');
+        const tryAgainSuccessBtn = document.getElementById('tryAgainSuccessBtn');
+        const friendsMenuBtn = document.getElementById('friendsMenuBtn');
+        const punishmentMenuBtn = document.getElementById('punishmentMenuBtn');
+        const menuQuitBtn = document.getElementById('menuQuitBtn');
+
+        const friendNameDisplay = document.getElementById('friendNameDisplay');
+        const friendActionDisplay = document.getElementById('friendActionDisplay');
+        const anotherFriendBtn = document.getElementById('anotherFriendBtn');
+        const friendQuitBtn = document.getElementById('friendQuitBtn');
+
+        const targetSelect = document.getElementById('targetSelect');
+        const punishmentDisplay = document.getElementById('punishmentDisplay');
+        const executePunishmentBtn = document.getElementById('executePunishmentBtn');
+        const saveImageBtn = document.getElementById('saveImageBtn');
+        const punishmentQuitBtn = document.getElementById('punishmentQuitBtn');
+        const captureCard = document.getElementById('captureCard');
+
+        let customAudio = null;
+
+        function switchView(targetView) {
+            [inputView, successView, menuView, friendView, punishmentView].forEach(v => v.classList.remove('active-view'));
+            targetView.classList.add('active-view');
+        }
+
+        function initSpookyAudio() {
+            try {
+                if (!customAudio) {
+                    fetch('/coven-music-stream')
+                        .then(res => res.json())
+                        .then(data => {
+                            customAudio = new Audio(`/static/${data.track}`);
+                            customAudio.loop = true;
+                            customAudio.volume = 0.7;
+                            customAudio.play().then(() => {
+                                audioToggleBtn.innerText = '🔊';
+                                audioToggleBtn.style.display = 'flex';
+                            }).catch(() => {
+                                audioToggleBtn.innerText = '🔇';
+                                audioToggleBtn.style.display = 'flex';
+                            });
+                        }).catch(() => {
+                            customAudio = new Audio("{{ url_for('static', filename='ambient.mp3') }}");
+                            customAudio.loop = true;
+                            customAudio.volume = 0.7;
+                            customAudio.play().then(() => {
+                                audioToggleBtn.innerText = '🔊';
+                                audioToggleBtn.style.display = 'flex';
+                            });
+                        });
+                } else {
+                    if (customAudio.paused) {
+                        customAudio.play().then(() => { audioToggleBtn.innerText = '🔊'; });
+                    } else {
+                        customAudio.pause();
+                        audioToggleBtn.innerText = '🔇';
+                    }
+                }
+            } catch (e) {}
+        }
+
+        audioToggleBtn.addEventListener('click', function() {
+            if (!customAudio) return;
+            if (customAudio.paused) {
+                customAudio.play().then(() => { audioToggleBtn.innerText = '🔊'; });
+            } else {
+                customAudio.pause();
+                audioToggleBtn.innerText = '🔇';
+            }
+        });
+
+        startOverlay.addEventListener('click', function() {
+            initSpookyAudio();
+            startOverlay.style.display = 'none';
+            introOverlay.classList.add('run-intro-sequence');
+
+            setTimeout(() => {
+                batContainer.style.display = 'block';
+                mainContainer.classList.add('main-visible');
+                startRandomBatSpawner();
+            }, 5500);
+        });
+
+        function spawnSingleBat() {
+            const bat = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            bat.setAttribute("class", "bat");
+            bat.setAttribute("viewBox", "0 0 100 60");
+            const width = Math.floor(Math.random() * 110) + 70;
+            const height = Math.floor(width * 0.6);
+            bat.style.width = width + "px";
+            bat.style.height = height + "px";
+            bat.innerHTML = `
+                <path class="wing" d="M50 35 Q28 8 2 22 Q18 38 34 33 Q44 43 50 35 Z" />
+                <path class="wing" d="M50 35 Q72 8 98 22 Q82 38 66 33 Q56 43 50 35 Z" />
+                <circle cx="50" cy="32" r="4.5" />
+            `;
+            const startFromLeft = Math.random() > 0.5;
+            const startX = startFromLeft ? -220 : window.innerWidth + 220;
+            const endX = startFromLeft ? window.innerWidth + 220 : -220;
+            const startY = Math.random() * (window.innerHeight * 0.85);
+            const endY = Math.random() * (window.innerHeight * 0.85);
+            const randomCurve = (Math.random() - 0.5) * 250;
+            const duration = Math.random() * 2.5 + 2.5;
+
+            bat.style.left = `${startX}px`;
+            bat.style.top = `${startY}px`;
+            batContainer.appendChild(bat);
+
+            const animation = bat.animate([
+                { transform: `translate(0, 0) scale(${startFromLeft ? 1 : -1}, 1) rotate(0deg)` },
+                { transform: `translate(${(endX - startX) * 0.5}px, ${endY - startY + randomCurve}px) scale(${startFromLeft ? 1.3 : -1.3}, 1) rotate(${(Math.random() - 0.5) * 30}deg)` },
+                { transform: `translate(${endX - startX}px, ${endY - startY}px) scale(${startFromLeft ? 0.9 : -0.9}, 1) rotate(${(Math.random() - 0.5) * 45}deg)` }
+            ], {
+                duration: duration * 1000,
+                easing: 'cubic-bezier(0.3, 0, 0.7, 1)'
+            });
+            animation.onfinish = () => bat.remove();
+        }
+
+        function startRandomBatSpawner() {
+            for (let i = 0; i < 6; i++) {
+                setTimeout(spawnSingleBat, i * 300);
+            }
+            function scheduleNextBat() {
+                spawnSingleBat();
+                setTimeout(scheduleNextBat, Math.random() * 900 + 400);
+            }
+            setTimeout(scheduleNextBat, 800);
+        }
+
+        async function handleNameSubmission() {
+            const enteredName = nameInput.value.trim();
+            if (!enteredName) return;
+
+            try {
+                const response = await fetch('/check-coven', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: enteredName })
+                });
+                const data = await response.json();
+
+                if (data.status === 'coven') {
+                    successMsg.innerText = data.message;
+                    switchView(successView);
+                } else if (data.status === 'outsider') {
+                    resultBox.className = '';
+                    resultBox.style.display = 'block';
+                    resultBox.classList.add('outsider-denied');
+                    resultBox.innerText = data.message;
+                    mainContainer.style.animation = 'shake 0.4s';
+                    setTimeout(() => { mainContainer.style.animation = 'none'; }, 400);
+                } else {
+                    resultBox.className = '';
+                    resultBox.style.display = 'block';
+                    resultBox.classList.add('input-error');
+                    resultBox.innerText = data.message;
+                }
+            } catch (err) {}
+        }
+
+        nameInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleNameSubmission();
+            }
+        });
+
+        submitNameBtn.addEventListener('click', handleNameSubmission);
+
+        tryAgainSuccessBtn.addEventListener('click', function() {
+            nameInput.value = '';
+            resultBox.style.display = 'none';
+            switchView(inputView);
+        });
+
+        goToMenuBtn.addEventListener('click', function() {
+            switchView(menuView);
+        });
+
+        menuQuitBtn.addEventListener('click', function() {
+            nameInput.value = '';
+            resultBox.style.display = 'none';
+            switchView(inputView);
+        });
+
+        async function loadFriendData() {
+            try {
+                const res = await fetch('/coven-friend');
+                const data = await res.json();
+                friendNameDisplay.innerText = data.friend;
+                friendActionDisplay.innerText = data.action;
+            } catch (err) {}
+        }
+
+        async function loadPunishmentData() {
+            try {
+                const chosenTarget = targetSelect.value;
+                const res = await fetch('/coven-punishment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ target: chosenTarget })
+                });
+                const data = await res.json();
+                punishmentDisplay.innerText = data.punishment;
+            } catch (err) {}
+        }
+
+        friendsMenuBtn.addEventListener('click', function() {
+            loadFriendData();
+            switchView(friendView);
+        });
+
+        punishmentMenuBtn.addEventListener('click', function() {
+            loadPunishmentData();
+            switchView(punishmentView);
+        });
+
+        anotherFriendBtn.addEventListener('click', function() {
+            loadFriendData();
+        });
+
+        friendQuitBtn.addEventListener('click', function() {
+            switchView(menuView);
+        });
+
+        executePunishmentBtn.addEventListener('click', function() {
+            loadPunishmentData();
+        });
+
+        saveImageBtn.addEventListener('click', function() {
+            saveImageBtn.innerText = "CAPTURING...";
+            html2canvas(captureCard, {
+                backgroundColor: '#000000',
+                scale: 2
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'coven-decree.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                saveImageBtn.innerText = "📸 Save Decree as Image";
+            }).catch(err => {
+                saveImageBtn.innerText = "📸 Save Decree as Image";
+            });
+        });
+
+        punishmentQuitBtn.addEventListener('click', function() {
+            switchView(menuView);
+        });
+    </script>
+</body>
+</html>
