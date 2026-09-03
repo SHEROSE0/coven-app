@@ -345,7 +345,6 @@
     <div id="mainContainer" class="main-container">
         <div class="ui-container">
 
-            <!-- VIEW 1: NAME INPUT -->
             <div id="inputView" class="view-section active-view">
                 <div class="prompt">What is your name?</div>
                 <form id="covenForm" onsubmit="return false;">
@@ -357,7 +356,6 @@
                 <div id="result-box" style="display: none;"></div>
             </div>
 
-            <!-- VIEW 2: SUCCESS -->
             <div id="successView" class="view-section">
                 <div class="prompt" style="color: #4caf50; text-shadow: 0 0 15px #4caf50;">Access Granted</div>
                 <div id="successMsg" style="color: #ffffff; font-size: 0.95rem; margin-bottom: 15px; line-height: 1.4; background: rgba(27, 94, 32, 0.9); border: 2px solid #4caf50; padding: 12px; border-radius: 6px; width: 100%; word-break: break-word;"></div>
@@ -367,7 +365,6 @@
                 </div>
             </div>
 
-            <!-- VIEW 3: MENU -->
             <div id="menuView" class="view-section">
                 <div class="prompt">Coven Sanctum Menu</div>
                 <button id="friendsMenuBtn" class="occult-btn menu-btn">✨ Friends & Blessings</button>
@@ -375,7 +372,6 @@
                 <button id="menuQuitBtn" class="occult-btn menu-btn" style="border-color: #ff0000; background: rgba(139, 0, 0, 0.6);">Quit to Portal</button>
             </div>
 
-            <!-- VIEW 4: FRIENDS FEATURE -->
             <div id="friendView" class="view-section">
                 <div class="prompt">Spirit Guidance</div>
                 <div class="friend-card">
@@ -387,7 +383,6 @@
                 <button id="friendQuitBtn" class="occult-btn menu-btn" style="background: rgba(139, 0, 0, 0.6);">Quit to Menu</button>
             </div>
 
-            <!-- VIEW 5: PUNISHMENT FEATURE -->
             <div id="punishmentView" class="view-section">
                 <div class="prompt" style="color: #ff5252; text-shadow: 0 0 15px #ff5252; font-size: 1.1rem;">Tribunal of Punishment</div>
                 
@@ -500,7 +495,7 @@
             const bat = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             bat.setAttribute("class", "bat");
             bat.setAttribute("viewBox", "0 0 100 60");
-            const width = Math.floor(Math.random() * 80) + 50;
+            const width = Math.floor(Math.random() * 120) + 90;
             const height = Math.floor(width * 0.6);
             bat.style.width = width + "px";
             bat.style.height = height + "px";
@@ -509,13 +504,13 @@
                 <path class="wing" d="M50 35 Q70 10 95 25 Q80 40 65 35 Q55 45 50 35 Z" />
                 <circle cx="50" cy="33" r="5" />
             `;
-            const startFromLeft = Math.random() > 0.3;
+            const startFromLeft = Math.random() > 0.5;
             const startX = startFromLeft ? -150 : window.innerWidth + 150;
             const endX = startFromLeft ? window.innerWidth + 150 : -150;
             const startY = Math.random() * (window.innerHeight * 0.85);
             const endY = Math.random() * (window.innerHeight * 0.85);
-            const randomCurve = (Math.random() - 0.5) * 120;
-            const duration = Math.random() * 3 + 3;
+            const randomCurve = (Math.random() - 0.5) * 200;
+            const duration = Math.random() * 4 + 3;
 
             bat.style.left = `${startX}px`;
             bat.style.top = `${startY}px`;
@@ -523,8 +518,8 @@
 
             const animation = bat.animate([
                 { transform: `translate(0, 0) scale(${startFromLeft ? 1 : -1}, 1)` },
-                { transform: `translate(${(endX - startX) * 0.5}px, ${endY - startY + randomCurve}px) scale(${startFromLeft ? 1.1 : -1.1}, 1)` },
-                { transform: `translate(${endX - startX}px, ${endY - startY}px) scale(${startFromLeft ? 0.9 : -0.9}, 1)` }
+                { transform: `translate(${(endX - startX) * 0.5}px, ${endY - startY + randomCurve}px) scale(${startFromLeft ? 1.2 : -1.2}, 1.2)` },
+                { transform: `translate(${endX - startX}px, ${endY - startY}px) scale(${startFromLeft ? 0.9 : -0.9}, 0.9)` }
             ], {
                 duration: duration * 1000,
                 easing: 'cubic-bezier(0.4, 0, 0.6, 1)'
